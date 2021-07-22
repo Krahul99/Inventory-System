@@ -92,7 +92,7 @@ public class monthlyLog  implements Initializable {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB = connectNow.getConnection();
 
-            String connectQuery = "SELECT * FROM `inventory_management`.`product_details`";
+            String connectQuery = "SELECT * FROM `deletelog`.`deletemaster`";
             Statement statement = connectDB.createStatement();
             ResultSet queryOutput = statement.executeQuery(connectQuery);
 

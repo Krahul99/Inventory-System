@@ -262,7 +262,7 @@ public class DeleteLogController implements Initializable {
 
 //        String connectQuery1 = String.format("DELETE FROM `inventory_management`.`inward_item` WHERE part_no = '%s'", selectedProdID);
 //        String selectedquantity=selectedQuantity.getText();
-//          String connectQuery1 = String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv )  %s WHERE `part_no` = '%s';",selectedProdID,selectedItems.get(0).getP_quantity(),selectedProdID);
+        String connectQuery1 = String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",selectedProdID,selectedItems.get(0).getP_quantity(),selectedProdID);
 
 //        String connectQuery2 = String.format("UPDATE `deletelog`.`outward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM deletelog.outward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",selectedProdID,selectedquantity,selectedProdID);
 
@@ -273,12 +273,14 @@ public class DeleteLogController implements Initializable {
 
             Statement statement = connectDB.createStatement();
             statement.executeUpdate(connectQuery);
-//            statement.executeUpdate(connectQuery1);
+            statement.executeUpdate(connectQuery1);
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        tableView.getItems().removeAll(tableView.getSelectionModel().getSelectedItem());
+
     }
 
     public void retrieveSearchedItems(ActionEvent actionEvent) {
