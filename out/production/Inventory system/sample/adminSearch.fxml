@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="650.0" minWidth="1290.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #C4FCF0;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SearchTableController">
+<AnchorPane minHeight="650.0" minWidth="1290.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #C4FCF0;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.adminSearchTableController">
     <children>
-        <Button fx:id="back" layoutX="-9.0" layoutY="-3.0" mnemonicParsing="false" onAction="#goSample" prefHeight="46.0" prefWidth="121.0" style="-fx-background-color: #C4FCF0;" text="&lt;- BACK" textAlignment="JUSTIFY" textFill="#005575">
+        <Button fx:id="back" layoutX="-9.0" layoutY="-3.0" mnemonicParsing="false" onAction="#goThird" prefHeight="46.0" prefWidth="121.0" style="-fx-background-color: #C4FCF0;" text="&lt;- BACK" textAlignment="JUSTIFY" textFill="#005575">
             <font>
                 <Font name="System Bold" size="21.0" />
             </font>
@@ -21,7 +21,7 @@
             </font>
         </Label>
         <TextField fx:id="filterBox" layoutX="561.0" layoutY="67.0" prefHeight="25.0" prefWidth="233.0" />
-        <TableView fx:id="tableView" layoutX="16.0" layoutY="153.0" prefHeight="522.0" prefWidth="1260.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="112.60000000000002">
+        <TableView fx:id="tableView" layoutX="16.0" layoutY="153.0" prefHeight="519.0" prefWidth="1260.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="115.79999999999995">
             <columns>
                 <TableColumn fx:id="col_partNo" minWidth="0.0" prefWidth="153.33335876464844" text="PART NUMBER" />
                 <TableColumn fx:id="col_refPartNo" minWidth="0.0" prefWidth="153.33335876464844" text="REFERENCE PART NUMBER" />
@@ -31,6 +31,8 @@
                 <TableColumn fx:id="col_company" minWidth="0.0" prefWidth="153.33335876464844" text="COMPANY" />
                 <TableColumn fx:id="col_inventoryDate" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="INVENTORY DATE" />
                 <TableColumn fx:id="col_sourceOfPurchase" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="SOURCE OF PURCHASE" />
+                <TableColumn fx:id="col_landingPurchaseValue" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="LANDING PURCHASE VALUE" />
+                <TableColumn fx:id="col_sellingValue" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="SELLING VALUE" />
                 <TableColumn fx:id="col_stockLocation" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="STOCK LOCATION" />
                 <TableColumn fx:id="col_techDetails" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="TECH DETAILS" />
                 <TableColumn fx:id="col_setOf" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="SET OF" />
@@ -38,10 +40,10 @@
                 <TableColumn fx:id="col_comment" minWidth="5.3333740234375" prefWidth="182.66665649414062" text="COMMENT" />
             </columns>
         </TableView>
-        <Button fx:id="HOME" layoutX="1192.0" mnemonicParsing="false" onAction="#goSample" prefHeight="46.0" prefWidth="98.0" style="-fx-background-color: #C4FCF0;" text="HOME" textAlignment="JUSTIFY" textFill="#005575">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </Button>
+      <Button fx:id="HOME" layoutX="1192.0" mnemonicParsing="false" onAction="#goSample" prefHeight="46.0" prefWidth="98.0" style="-fx-background-color: #C4FCF0;" text="HOME" textAlignment="JUSTIFY" textFill="#005575">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

@@ -22,25 +22,22 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class DeleteLogController implements Initializable {
+public class adminDeleteTableController implements Initializable {
     private Stage stage;
     private Scene scene;
     private Parent root;
     private String connectQuery;
-    public DatePicker startdatelog;
-    public DatePicker enddatelog;
 
-    @FXML
-    private TextField selectedQuantity;
     @FXML
     AnchorPane myAnchorPane;
     @FXML
-    public TextField filterBox=new TextField();
+    private TextField selectedQuantity;
+    @FXML
+    public TextField filterBox;
     @FXML
     public TableView<adminModelTable> tableView = new TableView<>();
     @FXML
@@ -88,7 +85,7 @@ public class DeleteLogController implements Initializable {
         DatabaseConnection connectNow = new DatabaseConnection();
         Connection connectDB = connectNow.getConnection();
 
-        String connectQuery = "SELECT * FROM `deletelog`.`outward_item`";
+        String connectQuery = "SELECT * FROM `inventory_management`.`inward_item`";
 
         try {
 
@@ -131,36 +128,36 @@ public class DeleteLogController implements Initializable {
             col_comment.setCellValueFactory(new PropertyValueFactory<>("P_comment"));
             tableView.setItems(observableList);
 
-//            FilteredList<adminModelTable> filteredData = new FilteredList<>(observableList, b -> true);
-//            filterBox.textProperty().addListener((observableValue, s, t1) -> {
-//                filteredData.setPredicate(modelTable -> {
-//                    if (t1 == null || t1.isEmpty()) {
-//                        return true;
-//                    }
-//                    String lowerCaseFilter = t1.toLowerCase();
-//
-//                    if (modelTable.getP_partNumber().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-//                        return true;
-//                    }
-//                    if (String.valueOf(modelTable.getP_refPartNumber()).toLowerCase().indexOf(lowerCaseFilter) != -1) {
-//                        return true;
-//                    }
-//                    if (String.valueOf(modelTable.getP_quantity()).toLowerCase().indexOf(lowerCaseFilter) != -1) {
-//                        return true;
-//                    }
-//                    if (modelTable.getP_invDate().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-//                        return true;
-//                    }
-//                    if (modelTable.getP_partFor().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-//                        return true;
-//                    } else
-//                        return false;
-//                });
-//            });
-//
-//            SortedList<adminModelTable> sortedData = new SortedList<>(filteredData);
-//            sortedData.comparatorProperty().bind(tableView.comparatorProperty());
-//            tableView.setItems(sortedData);
+            FilteredList<adminModelTable> filteredData = new FilteredList<>(observableList, b -> true);
+            filterBox.textProperty().addListener((observableValue, s, t1) -> {
+                filteredData.setPredicate(modelTable -> {
+                    if (t1 == null || t1.isEmpty()) {
+                        return true;
+                    }
+                    String lowerCaseFilter = t1.toLowerCase();
+
+                    if (modelTable.getP_partNumber().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                        return true;
+                    }
+                    if (String.valueOf(modelTable.getP_refPartNumber()).toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                        return true;
+                    }
+                    if (String.valueOf(modelTable.getP_quantity()).toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                        return true;
+                    }
+                    if (modelTable.getP_invDate().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                        return true;
+                    }
+                    if (modelTable.getP_partFor().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                        return true;
+                    } else
+                        return false;
+                });
+            });
+
+            SortedList<adminModelTable> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedData);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -217,31 +214,55 @@ public class DeleteLogController implements Initializable {
 //
 
     //    }
-    public void goLogin(javafx.event.ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
+//    public void goLogin(javafx.event.ActionEvent actionEvent) throws IOException {
+//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login.fxml")));
+//        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
+//
+//    public void goSearch(ActionEvent actionEvent) throws IOException {
+//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("adminSearch.fxml")));
+//        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
+//
+//    public void goDELETE_PUBLIC(ActionEvent actionEvent) throws IOException {
+//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("DELETE_PUBLIC.fxml")));
+//        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
 
-    public void goSearch(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("adminSearch.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
+    public void DeleteLog(ActionEvent actionEvent) throws IOException {
+        ObservableList<adminModelTable> selectedItems = tableView.getSelectionModel().getSelectedItems();
+        String selectedProdID = selectedItems.get(0).getP_partNumber();
 
-    public void goDELETE_PUBLIC(ActionEvent actionEvent) throws IOException {
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("DELETE_PUBLIC.fxml")));
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
 
-    public void DeleteLogMaster(ActionEvent actionEvent) throws IOException{
+//        String connectQuery1 = String.format("DELETE FROM `inventory_management`.`inward_item` WHERE part_no = '%s'", selectedProdID);
+        String selectedquantity=selectedQuantity.getText();
+        int newCount=selectedItems.get(0).getP_quantity()-Integer.parseInt(selectedquantity);
+
+
+
+        String connectQuery2 = String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",selectedProdID,selectedquantity,selectedProdID);
+
+        try {
+            DatabaseConnectionDelete connectNow = new DatabaseConnectionDelete();
+            Connection connectDB = connectNow.getConnection();
+
+            Statement statement = connectDB.createStatement();
+            statement.executeUpdate(connectQuery2);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Stage stage = (Stage) myAnchorPane.getScene().getWindow();
 
@@ -253,61 +274,20 @@ public class DeleteLogController implements Initializable {
 
         alert.getDialogPane().setContentText("Do you want to confirm?");
 
-        alert.getDialogPane().setHeaderText("Are you sure you want to delete selected product.");
+        alert.getDialogPane().setHeaderText("Are you sure you want to delete"+Integer.parseInt(selectedquantity)+"of selected product.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            ObservableList<adminModelTable> selectedItems = tableView.getSelectionModel().getSelectedItems();
-            String selectedProdID = selectedItems.get(0).getP_partNumber();
-            String connectQuery = "INSERT INTO `deletelog`.`deletemaster` (\n" +
-                    "`part_no`,\n" +
-                    "`ref_part_no`,\n" +
-                    "`add_on`,\n" +
-                    "`quantity`,\n" +
-                    "`part_for`,\n" +
-                    "`company`,\n" +
-                    "`inventory_date`,\n" +
-                    "`source_of_p`,\n" +
-                    "`landing_pv`,\n" +
-                    "`sell_v`,\n" +
-                    "`stock_loc`,\n" +
-                    "`tech_details`,\n" +
-                    "`setof`,\n" +
-                    "`prefix`,\n" +
-                    "`comment`) VALUES ('"+selectedItems.get(0).getP_partNumber()+"','"+selectedItems.get(0).getP_refPartNumber()+"','"+selectedItems.get(0).getP_addOn()+"','"+selectedItems.get(0).getP_quantity()+"','"+selectedItems.get(0).getP_partFor()+"','"+selectedItems.get(0).getP_company()+"','"+selectedItems.get(0).getP_invDate()+"','"+selectedItems.get(0).getP_sourceOfPurchase()+"','"+selectedItems.get(0).getP_landingPurchaseValue()+"','"+selectedItems.get(0).getP_sellingValue()+"','"+selectedItems.get(0).getP_stockLocation()+"','"+selectedItems.get(0).getP_techDetails()+"','"+selectedItems.get(0).getP_setOf()+"','"+selectedItems.get(0).getP_prefix()+"','"+selectedItems.get(0).getP_comment()+"'"+")";
-
-//        String selectedquantity=selectedQuantity.getText();
-
-//        String connectQuery2 = String.format("SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",);
-            String connectQuery1 = String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",selectedProdID,selectedItems.get(0).getP_quantity(),selectedProdID);
-
-            String connectQuery3 = String.format("DELETE FROM `deletelog`.`outward_item` WHERE part_no = '%s'", selectedProdID);
-
-            try {
-                DatabaseConnectionDelete connectNow = new DatabaseConnectionDelete();
-                Connection connectDB = connectNow.getConnection();
-
-                Statement statement = connectDB.createStatement();
-                statement.executeUpdate(connectQuery);
-                statement.executeUpdate(connectQuery1);
-                statement.executeUpdate(connectQuery3);
-
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            observableList.removeAll(selectedItems);
-
-//            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
-//            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-//            scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
-
-    }
-
-    public void retrieveSearchedItems(ActionEvent actionEvent) {
+//        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
+//        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     public void goDelete(ActionEvent actionEvent) throws IOException {
@@ -317,40 +297,7 @@ public class DeleteLogController implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
-    public void monthlyLog(ActionEvent actionEvent) {
-        LocalDate startDate=startdatelog.getValue();
-        LocalDate endDate=enddatelog.getValue();
-        String connectQuery = "SELECT * from `deletelog`.`outward_item` where inventory_date between '" + startDate + "' and '" + endDate + "'";
-        System.out.println(connectQuery);
-        tableView.getItems().clear();
 
-        try {
-            DatabaseConnection connectNow = new DatabaseConnection();
-            Connection connectDB = connectNow.getConnection();
-
-            Statement statement = connectDB.createStatement();
-            ResultSet queryOutput = statement.executeQuery(connectQuery);
-
-            while(queryOutput.next()) {
-                observableList.add(new adminModelTable(
-                        queryOutput.getString("part_no"),
-                        queryOutput.getString("ref_part_no"),
-                        queryOutput.getString("add_on"),
-                        queryOutput.getInt("quantity"),
-                        queryOutput.getString("part_for"),
-                        queryOutput.getString("company"),
-                        queryOutput.getString("inventory_date"),
-                        queryOutput.getString("source_of_p"),
-                        queryOutput.getInt("landing_pv"),
-                        queryOutput.getInt("sell_v"),
-                        queryOutput.getString("stock_loc"),
-                        queryOutput.getString("tech_details"),
-                        queryOutput.getString("setof"),
-                        queryOutput.getString("prefix"),
-                        queryOutput.getString("comment")));
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    public void retrieveSearchedItems(ActionEvent actionEvent) {
+//    }
 }

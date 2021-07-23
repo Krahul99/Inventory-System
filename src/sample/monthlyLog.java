@@ -3,7 +3,6 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,41 +32,41 @@ public class monthlyLog  implements Initializable {
     private Parent root;
 
     @FXML
-    public TableView<modelTable> tableView = new TableView<>();
+    public TableView<adminModelTable> tableView = new TableView<>();
     @FXML
-    public TableColumn<modelTable,String> col_partNo=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_partNo=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_refPartNo=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_refPartNo=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_addOn=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_addOn=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,Integer> col_quantity=new TableColumn<>();
+    public TableColumn<adminModelTable,Integer> col_quantity=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_partFor=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_partFor=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_company=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_company=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_inventoryDate=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_inventoryDate=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_sourceOfPurchase=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_sourceOfPurchase=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,Integer> col_landingPurchaseValue=new TableColumn<>();
+    public TableColumn<adminModelTable,Integer> col_landingPurchaseValue=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,Integer> col_sellingValue=new TableColumn<>();
+    public TableColumn<adminModelTable,Integer> col_sellingValue=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_stockLocation=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_stockLocation=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_techDetails=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_techDetails=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_setOf=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_setOf=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_prefix=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_prefix=new TableColumn<>();
     @FXML
-    public TableColumn<modelTable,String> col_comment=new TableColumn<>();
+    public TableColumn<adminModelTable,String> col_comment=new TableColumn<>();
 
 
 
-    ObservableList<modelTable> observableList = FXCollections.observableArrayList();
+    ObservableList<adminModelTable> observableList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -78,7 +77,7 @@ public class monthlyLog  implements Initializable {
         col_partFor.setCellValueFactory(new PropertyValueFactory<>("P_partFor"));
         col_company.setCellValueFactory(new PropertyValueFactory<>("P_company"));
         col_inventoryDate.setCellValueFactory(new PropertyValueFactory<>("P_invDate"));
-        col_inventoryDate.setCellValueFactory(new PropertyValueFactory<>("P_sourceOfPurchase"));
+        col_sourceOfPurchase.setCellValueFactory(new PropertyValueFactory<>("P_sourceOfPurchase"));
         col_landingPurchaseValue.setCellValueFactory(new PropertyValueFactory<>("P_landingPurchaseValue"));
         col_sellingValue.setCellValueFactory(new PropertyValueFactory<>("P_sellingValue"));
         col_stockLocation.setCellValueFactory(new PropertyValueFactory<>("P_stockLocation"));
@@ -97,7 +96,7 @@ public class monthlyLog  implements Initializable {
             ResultSet queryOutput = statement.executeQuery(connectQuery);
 
             while (queryOutput.next()) {
-                observableList.add(new modelTable(
+                observableList.add(new adminModelTable(
                         queryOutput.getString("part_no"),
                         queryOutput.getString("ref_part_no"),
                         queryOutput.getString("add_on"),
@@ -118,11 +117,11 @@ public class monthlyLog  implements Initializable {
             e.printStackTrace();
         }
     }
+
         public void monthlyLog(ActionEvent actionEvent) {
             LocalDate startDate=startdatelog.getValue();
             LocalDate endDate=enddatelog.getValue();
-            String connectQuery = "select * from product_details where mfd between '" + startDate + "' and '" + endDate + "'";
-            System.out.println(connectQuery);
+            String connectQuery = "SELECT * from `deletelog`.`deletemaster` where inventory_date between '" + startDate + "' and '" + endDate + "'";
             tableView.getItems().clear();
 
             try {
@@ -133,7 +132,7 @@ public class monthlyLog  implements Initializable {
                 ResultSet queryOutput = statement.executeQuery(connectQuery);
 
                 while(queryOutput.next()) {
-                    observableList.add(new modelTable(
+                    observableList.add(new adminModelTable(
                             queryOutput.getString("part_no"),
                             queryOutput.getString("ref_part_no"),
                             queryOutput.getString("add_on"),
@@ -156,6 +155,22 @@ public class monthlyLog  implements Initializable {
         }
     public void goDelete(ActionEvent actionEvent) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("delete.fxml")));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void goThird(ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("third.fxml")));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void goSample(ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
