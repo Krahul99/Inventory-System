@@ -34,6 +34,7 @@ public class DeleteLogController implements Initializable {
     private String connectQuery;
     public DatePicker startdatelog;
     public DatePicker enddatelog;
+    String connectQuery1;
 
     @FXML
     private TextField selectedQuantity;
@@ -65,8 +66,6 @@ public class DeleteLogController implements Initializable {
     public TableColumn<adminModelTable, Integer> col_sellingValue = new TableColumn<>();
     @FXML
     public TableColumn<adminModelTable, String> col_stockLocation = new TableColumn<>();
-    @FXML
-    public TableColumn<adminModelTable, String> col_techDetails = new TableColumn<>();
     @FXML
     public TableColumn<adminModelTable, String> col_setOf = new TableColumn<>();
     @FXML
@@ -108,7 +107,6 @@ public class DeleteLogController implements Initializable {
                         queryOutput.getInt("landing_pv"),
                         queryOutput.getInt("sell_v"),
                         queryOutput.getString("stock_loc"),
-                        queryOutput.getString("tech_details"),
                         queryOutput.getString("setof"),
                         queryOutput.getString("prefix"),
                         queryOutput.getString("comment")));
@@ -125,7 +123,6 @@ public class DeleteLogController implements Initializable {
             col_landingPurchaseValue.setCellValueFactory(new PropertyValueFactory<>("P_landingPurchaseValue"));
             col_sellingValue.setCellValueFactory(new PropertyValueFactory<>("P_sellingValue"));
             col_stockLocation.setCellValueFactory(new PropertyValueFactory<>("P_stockLocation"));
-            col_techDetails.setCellValueFactory(new PropertyValueFactory<>("P_stockLocation"));
             col_setOf.setCellValueFactory(new PropertyValueFactory<>("P_setOf"));
             col_prefix.setCellValueFactory(new PropertyValueFactory<>("P_prefix"));
             col_comment.setCellValueFactory(new PropertyValueFactory<>("P_comment"));
@@ -258,6 +255,9 @@ public class DeleteLogController implements Initializable {
         if (result.get() == ButtonType.OK) {
             ObservableList<adminModelTable> selectedItems = tableView.getSelectionModel().getSelectedItems();
             String selectedProdID = selectedItems.get(0).getP_partNumber();
+            Integer selectedQuantity = selectedItems.get(0).getP_quantity();
+            boolean flag = selectedQuantity < 0;
+
             String connectQuery = "INSERT INTO `deletelog`.`deletemaster` (\n" +
                     "`part_no`,\n" +
                     "`ref_part_no`,\n" +
@@ -270,17 +270,35 @@ public class DeleteLogController implements Initializable {
                     "`landing_pv`,\n" +
                     "`sell_v`,\n" +
                     "`stock_loc`,\n" +
-                    "`tech_details`,\n" +
                     "`setof`,\n" +
                     "`prefix`,\n" +
-                    "`comment`) VALUES ('"+selectedItems.get(0).getP_partNumber()+"','"+selectedItems.get(0).getP_refPartNumber()+"','"+selectedItems.get(0).getP_addOn()+"','"+selectedItems.get(0).getP_quantity()+"','"+selectedItems.get(0).getP_partFor()+"','"+selectedItems.get(0).getP_company()+"','"+selectedItems.get(0).getP_invDate()+"','"+selectedItems.get(0).getP_sourceOfPurchase()+"','"+selectedItems.get(0).getP_landingPurchaseValue()+"','"+selectedItems.get(0).getP_sellingValue()+"','"+selectedItems.get(0).getP_stockLocation()+"','"+selectedItems.get(0).getP_techDetails()+"','"+selectedItems.get(0).getP_setOf()+"','"+selectedItems.get(0).getP_prefix()+"','"+selectedItems.get(0).getP_comment()+"'"+")";
+                    "`comment`) VALUES ('"+selectedItems.get(0).getP_partNumber()+"','"+selectedItems.get(0).getP_refPartNumber()+"','"+selectedItems.get(0).getP_addOn()+"','"+selectedItems.get(0).getP_quantity()+"','"+selectedItems.get(0).getP_partFor()+"','"+selectedItems.get(0).getP_company()+"','"+selectedItems.get(0).getP_invDate()+"','"+selectedItems.get(0).getP_sourceOfPurchase()+"','"+selectedItems.get(0).getP_landingPurchaseValue()+"','"+selectedItems.get(0).getP_sellingValue()+"','"+selectedItems.get(0).getP_stockLocation()+"','"+selectedItems.get(0).getP_setOf()+"','"+selectedItems.get(0).getP_prefix()+"','"+selectedItems.get(0).getP_comment()+"'"+")";
 
-//        String selectedquantity=selectedQuantity.getText();
-
-//        String connectQuery2 = String.format("SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",);
-            String connectQuery1 = String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = (SELECT `quantity` FROM (SELECT `quantity` FROM inventory_management.inward_item WHERE `part_no` = '%s') as lpv ) - %s WHERE `part_no` = '%s';",selectedProdID,selectedItems.get(0).getP_quantity(),selectedProdID);
-
+            connectQuery1 = flag ? String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = 0 WHERE `part_no` = '%s';",selectedProdID) :  String.format("UPDATE `inventory_management`.`inward_item` SET `quantity` = %s WHERE `part_no` = '%s';",selectedItems.get(0).getP_quantity(),selectedProdID);
             String connectQuery3 = String.format("DELETE FROM `deletelog`.`outward_item` WHERE part_no = '%s'", selectedProdID);
+
+            if(flag) {
+                stage = (Stage) myAnchorPane.getScene().getWindow();
+
+                type = Alert.AlertType.CONFIRMATION;
+                alert = new Alert(type, "");
+
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.initOwner(stage);
+
+                alert.getDialogPane().setContentText("Do you want to confirm?");
+
+                alert.getDialogPane().setHeaderText("The selected item's quantity count is less than 0. Would you like to add similar new items? ");
+                result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("AddNewItem.fxml")));
+                    stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+
 
             try {
                 DatabaseConnectionDelete connectNow = new DatabaseConnectionDelete();
@@ -297,14 +315,12 @@ public class DeleteLogController implements Initializable {
                 e.printStackTrace();
             }
             observableList.removeAll(selectedItems);
-
 //            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("sample.fxml")));
 //            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 //            scene = new Scene(root);
 //            stage.setScene(scene);
 //            stage.show();
         }
-
     }
 
     public void retrieveSearchedItems(ActionEvent actionEvent) {
@@ -344,7 +360,6 @@ public class DeleteLogController implements Initializable {
                         queryOutput.getInt("landing_pv"),
                         queryOutput.getInt("sell_v"),
                         queryOutput.getString("stock_loc"),
-                        queryOutput.getString("tech_details"),
                         queryOutput.getString("setof"),
                         queryOutput.getString("prefix"),
                         queryOutput.getString("comment")));
