@@ -9,7 +9,7 @@ public class DatabaseConnectionNext {
     public Connection getConnection() {
         String databaseName = "deletelog";
         String databaseUser = "root";
-        String databasePassword = "4562";
+        String databasePassword = "Krahul*8752";
 
         String url = "jdbc:mysql://localhost:3306/" + databaseName;
 
@@ -23,3 +23,6 @@ public class DatabaseConnectionNext {
         return databaseLink;
     }
 }
+
+
+
