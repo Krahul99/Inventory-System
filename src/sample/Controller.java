@@ -50,6 +50,8 @@ public class Controller implements Initializable {
     Button HOME;
     @FXML
     Label wrong;
+    @FXML
+    Label mismatch;
 
 
     @FXML
@@ -68,10 +70,17 @@ public class Controller implements Initializable {
     private TextField setof;
     @FXML
     private TextArea MiscComment;
-
+    @FXML
+    private TextField SECODE;
 
     @FXML
     PasswordField password;
+    @FXML
+    private PasswordField newPassword;
+    @FXML
+    private PasswordField confirmPassword;
+
+
 
     @FXML
     private ChoiceBox<String> partFor = new ChoiceBox<>();
@@ -104,14 +113,27 @@ public class Controller implements Initializable {
     }
 
     public void checkLogin(javafx.event.ActionEvent actionEvent) throws IOException {
-        if (password.getText().equals("1234")) {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("third.fxml")));
-            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } else {
-            wrong.setVisible(true);
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getConnection();
+
+        String query = "select count(1) from password WHERE pwd = '" + password.getText() + "'";
+        try {
+            Statement stmt = connectDB.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                if (rs.getInt(1) == 1) {
+                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("third.fxml")));
+                    stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } else {
+                    wrong.setVisible(true);
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -212,7 +234,6 @@ String stockImage;
 
         boolean flag=false;
 //        Random rand= new Random();
-//
 //        UPC.setText(myString);
         if (PartNumber.getText().length()==0 || Quantity.getText().length()==0 || InventoryDate.getValue()==null || LandingValue.getText().length()==0 || SellValue.getText().length()==0 ) {
             flag=true;
@@ -279,6 +300,7 @@ String stockImage;
         String company = Company.getValue();
         String inventoryDate = InventoryDate.getValue().toString();
         String StockLocation = stockImage;
+        StockLocation = "file:///" + StockLocation.replace("\\", "/");
         String Comment = "";
 
         String setOf = "";
@@ -440,6 +462,7 @@ String stockImage;
             String company = Company.getValue();
             String inventoryDate = InventoryDate.getValue().toString();
             String StockLocation = stockImage;
+            StockLocation = "file:///" + StockLocation.replace("\\", "/");
             String Comment = "";
 
             String setOf = setof.getText();
@@ -597,6 +620,7 @@ String stockImage;
         String company = "";
         String inventoryDate = InventoryDate.getValue().toString();
         String StockLocation = stockImage;
+        StockLocation = "file:///" + StockLocation.replace("\\", "/");
         String comment = MiscComment.getText();
 
         String setOf = "";
@@ -637,7 +661,8 @@ String stockImage;
 //                code128.generateBarcode(canvas, myString);
 //                canvas.finish();
 //                //write to png file
-//                FileOutputStream fos = new FileOutputStream("C:\\Users\\4manm\\IdeaProjects\\GG\\INVENTORY\\Barcode\\Barcode" + image_name);
+//                String directory = System.getProperty("user.dir");
+//                FileOutputStream fos = new FileOutputStream(directory+"\\Barcode\\" + image_name);
 //                fos.write(baos.toByteArray());
 //                fos.flush();
 //                fos.close();
@@ -684,6 +709,59 @@ String stockImage;
                 SellValue.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
                 SellValue.setText("*Enter digits from 0 to 9");
             }
+        }
+    }
+
+    public void confirm(ActionEvent actionEvent) throws IOException {
+        System.out.println(SECODE.getText());
+        if(SECODE.getText().equals("1995"))
+        {
+            // update the password in database
+            String newpwd = newPassword.getText();
+            if(newPassword.getText().equals(confirmPassword.getText()))
+            {
+                Stage stage = (Stage) myAnchorPane.getScene().getWindow();
+
+                Alert.AlertType type = Alert.AlertType.CONFIRMATION;
+                Alert alert = new Alert(type, "");
+
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.initOwner(stage);
+
+                alert.getDialogPane().setContentText("Do you want to confirm?");
+
+                alert.getDialogPane().setHeaderText("You want to set this as new password?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    DatabaseConnection connectNow = new DatabaseConnection();
+                    Connection connectDB = connectNow.getConnection();
+
+                    String sql= String.format("UPDATE password SET pwd = '%s';", newPassword.getText());
+                    System.out.println(sql);
+
+                    try{
+                        Statement statement = connectDB.createStatement();
+                        statement.executeUpdate(sql);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login.fxml")));
+                    stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                }
+            }
+            else
+            {
+                mismatch.setVisible(true);
+                newPassword.clear();
+                confirmPassword.clear();
+            }
+        }
+        else
+        {
+            SECODE.setText("WRONG ANSWER!");
         }
     }
 
@@ -949,5 +1027,12 @@ String stockImage;
                 e.printStackTrace();
             }
         }
+    }
+    public void gochangepassword(ActionEvent actionEvent) throws IOException  {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ChangePassword.fxml")));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 }
